@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Parabéns! 💜 Cartão da Kuromi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas id="fx"></canvas>
+    <div class="stars" aria-hidden="true"></div>
+
+    <main id="home">
+      <h1>Feliz aniversário!</h1>
+      <p class="sub">A Kuromi trouxe um presente pra você 💜</p>
+      <img
+        class="scene"
+        src="kuromi-presente.png"
+        alt="Kuromi abraçada num presente roxo com laço preto"
+        width="761"
+        height="1024"
+      />
+
+      <p class="q">Você gosta de calvos??</p>
+      <div class="btns">
+        <button id="yes">Sim</button>
+        <button id="sure">Com certeza</button>
+        <button id="nope" class="no">Não</button>
+      </div>
+      <div id="wrong" aria-live="polite"></div>
+    </main>
+
+    <main id="win">
+      <div class="big">Parabéns!!</div>
+      <p class="sub">Feliz aniversário! A Kuromi mandou um abraço 🎂💜</p>
+      <div class="frame">
+        <img src="foto-aniversariante.png" alt="Foto da aniversariante" />
+      </div>
+
+      <button class="link" id="again">Mais confete 🎉</button>
+      <p class="message">
+        FELIZ ANIVESARIO DIVAAAA, tudo de bom para voce nesta data.<br />
+        Infelizmente moro onde judas perdeu as botas... então não posso me fazer
+        presente no dia do seu niver.Então aceite esse pequeno presente que foi
+        uma tramoia entre eu e a lumy hehehheheheh.<br />
+        Quero que aceite essa caneca e o que mais eu colocar dentro(estou
+        fazendo o site antes mesmo de pensar no resto kkk) e tambem aceite essa
+        caneca de ilustação unica da <span>CalvoArtes</span> com todo o seu
+        coração e tambem que use para pelo menos tomar um chá de vez em quando(
+        ou aparecer nos seus videos hehe divulgação gratis).<br />
+        <br />
+        ps.: Tenho certeza que o Viktor do passado conseguiu esconder tudo e ter
+        bom gosto para presente. Estamos quites agora? Sim, mãe da le... Eu
+        estava devendo pra ela, acredita? Garanto que ela nem se lembra que no
+        inicio da amizade ela falava "+200" toda hora que eu falava uma virgula
+        no lugar errado.
+        <br />
+        <br />
+        Se tiver algum erro de portugues, releve ta?
+      </p>
+    </main>
+
+    <dialog
+      class="password-popup"
+      id="password-popup"
+      aria-labelledby="password-title"
+    >
+      <form id="password-form">
+        <p class="popup-icon" aria-hidden="true">🔐💜</p>
+        <h2 id="password-title">Surpresinha!</h2>
+        <p class="popup-text">
+          Digite a senha secreta para abrir seu presente ✨
+        </p>
+        <label class="sr-only" for="password-input">Senha</label>
+        <input
+          id="password-input"
+          type="password"
+          placeholder="Sua senha..."
+          autocomplete="off"
+          required
+        />
+        <p class="password-hint">Dica: Quando começamos a conversar??</p>
+        <p class="password-error" id="password-error" aria-live="polite"></p>
+        <div class="popup-buttons">
+          <button type="button" class="no" id="password-cancel">Voltar</button>
+          <button type="submit">Entrar 💖</button>
+        </div>
+      </form>
+    </dialog>
+    <!--senha: 25072026-->
+
+    <script>
+      (function () {
+        // estrelinhas
+        var st = document.querySelector(".stars"),
+          sy = ["✦", "♥", "✧", "☠"];
+        for (var i = 0; i < 16; i++) {
+          var s = document.createElement("span");
+          s.textContent = sy[i % 4];
+          s.style.left = Math.random() * 96 + "%";
+          s.style.top = Math.random() * 96 + "%";
+          s.style.fontSize = 10 + Math.random() * 16 + "px";
+          s.style.animationDelay = Math.random() * 3 + "s";
+          st.appendChild(s);
+        }
+
+        // confete
+        var cv = document.getElementById("fx"),
+          cx = cv.getContext("2d"),
+          P = [],
+          run = false;
+        var cols = [
+          "#ff6fb5",
+          "#ffb3d9",
+          "#9b59e0",
+          "#c9a0ff",
+          "#ffffff",
+          "#ff3d8b",
+        ];
+        function size() {
+          cv.width = innerWidth;
+          cv.height = innerHeight;
+        }
+        size();
+        addEventListener("resize", size);
+        function burst(n, x, y) {
+          for (var i = 0; i < n; i++) {
+            var a = Math.random() * Math.PI * 2,
+              v = 4 + Math.random() * 9;
+            P.push({
+              x: x,
+              y: y,
+              vx: Math.cos(a) * v,
+              vy: Math.sin(a) * v - 6,
+              w: 6 + Math.random() * 7,
+              h: 4 + Math.random() * 6,
+              c: cols[(Math.random() * cols.length) | 0],
+              r: Math.random() * 6,
+              vr: (Math.random() - 0.5) * 0.4,
+              heart: Math.random() < 0.2,
+              life: 1,
+            });
+          }
+          if (!run) {
+            run = true;
+            requestAnimationFrame(tick);
+          }
+        }
+        function tick() {
+          cx.clearRect(0, 0, cv.width, cv.height);
+          P = P.filter(function (p) {
+            p.vy += 0.28;
+            p.vx *= 0.99;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.r += p.vr;
+            p.life -= 0.004;
+            if (p.y > cv.height + 20 || p.life <= 0) return false;
+            cx.save();
+            cx.translate(p.x, p.y);
+            cx.rotate(p.r);
+            cx.fillStyle = p.c;
+            cx.globalAlpha = Math.min(1, p.life * 2);
+            if (p.heart) {
+              cx.font = p.w + 6 + "px sans-serif";
+              cx.fillText("♥", -5, 5);
+            } else cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            cx.restore();
+            return true;
+          });
+          if (P.length) requestAnimationFrame(tick);
+          else run = false;
+        }
+        function party() {
+          var w = innerWidth,
+            h = innerHeight;
+          burst(120, w * 0.2, h * 0.7);
+          burst(120, w * 0.8, h * 0.7);
+          burst(100, w * 0.5, h * 0.4);
+        }
+
+        setTimeout(function () {
+          burst(90, innerWidth / 2, innerHeight * 0.35);
+        }, 400);
+
+        // respostas
+        function win() {
+          document.getElementById("home").style.display = "none";
+          document.getElementById("win").style.display = "block";
+          document.getElementById("password-popup").close();
+          scrollTo(0, 0);
+          party();
+          setTimeout(party, 700);
+        }
+        var passwordPopup = document.getElementById("password-popup");
+        var passwordInput = document.getElementById("password-input");
+        var passwordError = document.getElementById("password-error");
+        function askPassword() {
+          passwordError.textContent = "";
+          passwordPopup.showModal();
+          passwordInput.focus();
+        }
+        document.getElementById("yes").onclick = askPassword;
+        document.getElementById("sure").onclick = askPassword;
+        document.getElementById("password-form").onsubmit = function (event) {
+          event.preventDefault();
+          if (passwordInput.value === "25072026") {
+            win();
+            return;
+          }
+          passwordError.textContent =
+            "Ops! Essa não é a senha 💜 Tente de novo!";
+          passwordInput.value = "";
+          passwordInput.focus();
+        };
+        document.getElementById("password-cancel").onclick = function () {
+          passwordPopup.close();
+          passwordInput.value = "";
+        };
+        document.getElementById("nope").onclick = function () {
+          var w = document.getElementById("wrong");
+          w.textContent = "Resposta errada 💔";
+          w.classList.remove("shake");
+          void w.offsetWidth;
+          w.classList.add("shake");
+        };
+        document.getElementById("again").onclick = party;
+      })();
+    </script>
+  </body>
+</html>
